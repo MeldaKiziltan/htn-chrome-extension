@@ -68,3 +68,18 @@ var noteCount = 0;
 init_notes();
 
 // TODO: Add Message Event Listener to Prompt Sticky Note Functions
+chrome.runtime.onMessage.addListener(
+  (reguest, sender, sendResponse) => {
+    if (request.action == "add"){ //adding notes
+      add_notes(request.notes);
+      sendResponse({status: "complete"});
+    }
+    else if (request.action == "clear") { //clear notes
+      clear_notes();
+      sendResponse({status: "complete"});
+    }
+    else { //weird stuff man
+      sendResponse({status: "error"});
+    }
+  }
+);

@@ -45,4 +45,27 @@ deleteNotes.onclick = function () {
 
 // Save Note
 saveNote.onclick = function () {
+  let note = notesField.value;
+  chrome.tabs.query({
+    active: true, 
+    currentWindow: true
+  }, function(tabs){
+    let url = tabs[0].url;
+    chrome.storage.local.get(url, notes => {
+      if (notes[url])
+        notes[url].push(note);
+      else
+        notes[url] = [note];
+      chrome.storage.local.set(notes);
+      chrome.tabs.sendMessage(tabs[0].id,
+        {
+          action: "add",
+          notes: [note]
+        }, _ => {
+          console.log("Added Note!");
+        }
+        );
+    });
+  });
+  location.reload();
 };
